@@ -4,6 +4,25 @@ COMMIT_MSG_FILE="$1"
 COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE")
 BRANCH=$(git branch --show-current)
 
+# pega apenas o body (ignora header)
+BODY=$(sed '1d' "$COMMIT_MSG_FILE")
+
+# valida bullets começando com letra minúscula
+while IFS= read -r line; do
+  case "$line" in
+    "- "*|"* "*)
+      FIRST_CHAR=$(echo "$line" | sed 's/^[-*] //; s/^\(.\).*/\1/')
+      if echo "$FIRST_CHAR" | grep -q '[A-Z]'; then
+        echo "❌ Bullets do commit devem iniciar com letra minúscula:"
+        echo "   $line"
+        exit 1
+      fi
+      ;;
+  esac
+done <<EOF
+$BODY
+EOF
+
 # branch: type/id-descricao
 BRANCH_TYPE=$(echo "$BRANCH" | cut -d'/' -f1)
 BRANCH_ISSUE=$(echo "$BRANCH" | sed -n 's|.*/\([0-9]\+\)-.*|\1|p')
