@@ -6,7 +6,12 @@ module.exports = {
       "always",
       ["feat", "fix", "chore", "docs", "refactor", "test"],
     ],
+
     "subject-empty": [2, "never"],
-    "subject-case": [0], // não forçar case
+    "subject-case": [0],
+
+    "references-empty": [2, "never"],
+
+    "body-leading-blank": [1, "always"],
   },
 };

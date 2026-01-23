@@ -1,2 +1,34 @@
 #!/bin/sh
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE")
+BRANCH=$(git branch --show-current)
+
+# branch: type/id-descricao
+BRANCH_TYPE=$(echo "$BRANCH" | cut -d'/' -f1)
+BRANCH_ISSUE=$(echo "$BRANCH" | sed -n 's|.*/\([0-9]\+\)-.*|\1|p')
+
+# commit: type: subject (#id)
+COMMIT_TYPE=$(echo "$COMMIT_MSG" | sed -n 's/^\([^:]\+\):.*/\1/p')
+COMMIT_ISSUE=$(echo "$COMMIT_MSG" | sed -n 's|.*(#\([0-9]\+\)).*|\1|p')
+
+# valida branch
+if [ -z "$BRANCH_TYPE" ] || [ -z "$BRANCH_ISSUE" ]; then
+  echo "[X] Branch inválida. Use: type/<id>-descricao"
+  exit 1
+fi
+
+# valida issue
+if [ "$BRANCH_ISSUE" != "$COMMIT_ISSUE" ]; then
+  echo "[X] Issue do commit (#$COMMIT_ISSUE) não corresponde à branch (#$BRANCH_ISSUE)"
+  exit 1
+fi
+
+# valida type
+if [ "$BRANCH_TYPE" != "$COMMIT_TYPE" ]; then
+  echo "[X] Type do commit ($COMMIT_TYPE) deve ser o mesmo da branch ($BRANCH_TYPE)"
+  exit 1
+fi
+
+# commitlint por último
 npx --no-install commitlint --edit "$1"
