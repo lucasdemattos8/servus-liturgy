@@ -1,3 +1,8 @@
+---
+name: Issue padrão
+about: Use este template para abrir uma issue
+---
+
 <!-- Selecione apenas um tipo -->
 
 🧩 Epic:
