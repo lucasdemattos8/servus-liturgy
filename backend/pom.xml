@@ -11,7 +11,7 @@
 	<groupId>com.lsc</groupId>
 	<artifactId>servus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Servus  – Sistema de Liturgias</name>
+	<name>Servus | Sistema de Liturgias</name>
 	<description>REST API in Spring for managing liturgies.</description>
 	<url/>
 	<licenses>
