@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* globais raros */
+html,
+body {
+  height: 100%;
+}
