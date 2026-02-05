@@ -8,6 +8,8 @@ on:
 jobs:
   sonar:
     runs-on: ubuntu-latest
+    env:
+      STAGE: test
 
     steps:
       - name: Checkout repository
