@@ -29,3 +29,6 @@ node_modules/
 # ENV Files
 .env
 .env.*
+
+# Coverage Files
+coverage/
