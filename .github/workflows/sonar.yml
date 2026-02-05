@@ -47,7 +47,7 @@ jobs:
       - name: Run frontend tests + coverage
         run: |
           cd frontend
-          npm run test -- --coverage --passWithNoTests
+          npm run test -- --passWithNoTests
 
       # =====================
       # Sonar Scan
