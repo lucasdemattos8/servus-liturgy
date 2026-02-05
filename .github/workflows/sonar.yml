@@ -1,0 +1,56 @@
+name: Sonar Analysis
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # =====================
+      # Backend (Java / Maven)
+      # =====================
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build backend + coverage (JaCoCo)
+        run: |
+          cd backend
+          mvn clean verify
+
+      # =====================
+      # Frontend (Node/Vitest)
+      # =====================
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run frontend tests + coverage
+        run: |
+          cd frontend
+          npm run test -- --coverage --passWithNoTests
+
+      # =====================
+      # Sonar Scan
+      # =====================
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
