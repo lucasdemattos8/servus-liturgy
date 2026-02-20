@@ -40,7 +40,7 @@ public class LiturgiaItem {
     @Column(nullable = false)
     private Boolean ativo = true;
 
-    protected LiturgiaItem() {
+    public LiturgiaItem() {
     }
 
     public LiturgiaItem(

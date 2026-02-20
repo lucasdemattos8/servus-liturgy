@@ -29,7 +29,7 @@ public class Template {
     @Column(nullable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    protected Template() {
+    public Template() {
     }
 
     public Template(String nome, String descricao) {

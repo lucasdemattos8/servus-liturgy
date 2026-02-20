@@ -37,7 +37,7 @@ public class Liturgia {
     @Column(nullable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    protected Liturgia() {
+    public Liturgia() {
     }
 
     public Liturgia(String nome, LocalDate data, LocalTime horarioInicio, UUID templateId) {

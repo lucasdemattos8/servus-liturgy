@@ -40,7 +40,7 @@ public class TemplateItem {
     @Column(nullable = false)
     private Boolean ativo = true;
 
-    protected TemplateItem() {
+    public TemplateItem() {
     }
 
     public TemplateItem(
