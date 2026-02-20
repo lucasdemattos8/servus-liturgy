@@ -1,10 +1,21 @@
 package com.lsc.servus.liturgia.dto;
 
-public record UpdateLiturgiaItemRequest(
-        String nome,
-        Integer ordem,
-        Integer duracaoPrevistaMinutos,
-        String descricao,
-        String responsavel,
-        String observacoes) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateLiturgiaItemRequest {
+
+        private String nome;
+        private Integer ordem;
+        private Integer duracaoPrevistaMinutos;
+        private String descricao;
+        private String responsavel;
+        private String observacoes;
+
 }
