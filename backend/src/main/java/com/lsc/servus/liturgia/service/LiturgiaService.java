@@ -54,9 +54,9 @@ public class LiturgiaService {
             throw new RuntimeException("Não é possível editar essa liturgia");
         }
 
-        liturgia.setNome(request.nome());
-        liturgia.setData(request.data());
-        liturgia.setHorarioInicio(request.horarioInicio());
+        liturgia.setNome(request.getNome());
+        liturgia.setData(request.getData());
+        liturgia.setHorarioInicio(request.getHorarioInicio());
 
         return liturgia;
     }
@@ -87,12 +87,12 @@ public class LiturgiaService {
 
         LiturgiaItem item = new LiturgiaItem(
                 liturgia,
-                request.nome(),
-                request.ordem(),
-                request.duracaoPrevistaMinutos(),
-                request.descricao(),
-                request.responsavel(),
-                request.observacoes());
+                request.getNome(),
+                request.getOrdem(),
+                request.getDuracaoPrevistaMinutos(),
+                request.getDescricao(),
+                request.getResponsavel(),
+                request.getObservacoes());
 
         return liturgiaItemRepository.save(item);
     }
@@ -112,12 +112,12 @@ public class LiturgiaService {
             throw new RuntimeException("Não é possível editar item");
         }
 
-        item.setNome(request.nome());
-        item.setOrdem(request.ordem());
-        item.setDuracaoPrevistaMinutos(request.duracaoPrevistaMinutos());
-        item.setDescricao(request.descricao());
-        item.setResponsavel(request.responsavel());
-        item.setObservacoes(request.observacoes());
+        item.setNome(request.getNome());
+        item.setOrdem(request.getOrdem());
+        item.setDuracaoPrevistaMinutos(request.getDuracaoPrevistaMinutos());
+        item.setDescricao(request.getDescricao());
+        item.setResponsavel(request.getResponsavel());
+        item.setObservacoes(request.getObservacoes());
 
         return item;
     }
