@@ -1,69 +1,72 @@
 package com.lsc.servus.liturgia.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "liturgias")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Liturgia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String nome;
+    @OneToMany(mappedBy = "liturgia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LiturgiaItem> itens = new ArrayList<>();
 
-    @Column(nullable = false)
-    private LocalDate data;
+    public LiturgiaItem adicionarItem(
+            String nome,
+            Integer duracaoPrevistaMinutos,
+            String descricao,
+            String responsavel,
+            String observacoes) {
 
-    @Column(nullable = false)
-    private LocalTime horarioInicio;
+        Integer novaOrdem = itens.size() + 1;
 
-    private UUID templateId;
+        LiturgiaItem item = new LiturgiaItem(
+                this,
+                nome,
+                novaOrdem,
+                duracaoPrevistaMinutos,
+                descricao,
+                responsavel,
+                observacoes);
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LiturgiaStatus status = LiturgiaStatus.PLANEJADA;
-
-    @Column(nullable = false)
-    private LocalDateTime criadoEm = LocalDateTime.now();
-
-    public Liturgia() {
+        itens.add(item);
+        return item;
     }
 
-    public Liturgia(String nome, LocalDate data, LocalTime horarioInicio, UUID templateId) {
-        this.nome = nome;
-        this.data = data;
-        this.horarioInicio = horarioInicio;
-        this.templateId = templateId;
-        this.status = LiturgiaStatus.PLANEJADA;
-        this.criadoEm = LocalDateTime.now();
-    }
+    public void moverItem(UUID itemId, Integer novaPosicao) {
 
-    public void iniciar() {
-        if (this.status != LiturgiaStatus.PLANEJADA) {
-            throw new IllegalStateException("Liturgia não pode ser iniciada");
+        List<LiturgiaItem> ativos = itens.stream()
+                .filter(LiturgiaItem::estaAtivo)
+                .sorted(Comparator.comparing(LiturgiaItem::getOrdem))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        LiturgiaItem item = buscarItem(itemId);
+
+        ativos.remove(item);
+        ativos.add(novaPosicao - 1, item);
+
+        for (int i = 0; i < ativos.size(); i++) {
+            ativos.get(i).atualizarOrdem(i + 1);
         }
-        this.status = LiturgiaStatus.EM_ANDAMENTO;
     }
 
-    public void finalizar() {
-        if (this.status != LiturgiaStatus.EM_ANDAMENTO) {
-            throw new IllegalStateException("Liturgia não pode ser finalizada");
-        }
-        this.status = LiturgiaStatus.FINALIZADA;
-    }
-
-    public void cancelar() {
-        this.status = LiturgiaStatus.CANCELADA;
+    private LiturgiaItem buscarItem(UUID itemId) {
+        return itens.stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
     }
 }

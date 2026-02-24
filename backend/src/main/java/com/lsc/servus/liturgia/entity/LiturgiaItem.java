@@ -1,15 +1,16 @@
 package com.lsc.servus.liturgia.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "liturgia_items")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LiturgiaItem {
 
     @Id
@@ -37,13 +38,11 @@ public class LiturgiaItem {
     @Column(columnDefinition = "TEXT")
     private String observacoes;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Boolean ativo = true;
+    private LiturgiaItemStatus status;
 
-    public LiturgiaItem() {
-    }
-
-    public LiturgiaItem(
+    protected LiturgiaItem(
             Liturgia liturgia,
             String nome,
             Integer ordem,
@@ -51,6 +50,7 @@ public class LiturgiaItem {
             String descricao,
             String responsavel,
             String observacoes) {
+
         this.liturgia = liturgia;
         this.nome = nome;
         this.ordem = ordem;
@@ -58,10 +58,39 @@ public class LiturgiaItem {
         this.descricao = descricao;
         this.responsavel = responsavel;
         this.observacoes = observacoes;
-        this.ativo = true;
+        this.status = LiturgiaItemStatus.PLANEJADO;
     }
 
-    public void desativar() {
-        this.ativo = false;
+    protected void atualizarOrdem(Integer novaOrdem) {
+        this.ordem = novaOrdem;
+    }
+
+    protected void atualizarDados(
+            String nome,
+            String descricao,
+            Integer duracaoPrevistaMinutos,
+            String responsavel,
+            String observacoes) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.duracaoPrevistaMinutos = duracaoPrevistaMinutos;
+        this.responsavel = responsavel;
+        this.observacoes = observacoes;
+    }
+
+    protected void cancelar() {
+        this.status = LiturgiaItemStatus.CANCELADO;
+    }
+
+    protected void iniciar() {
+        this.status = LiturgiaItemStatus.EM_PROGRESSO;
+    }
+
+    protected void concluir() {
+        this.status = LiturgiaItemStatus.CONCLUIDO;
+    }
+
+    public boolean estaAtivo() {
+        return status != LiturgiaItemStatus.CANCELADO;
     }
 }
