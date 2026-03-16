@@ -1,8 +1,9 @@
 package com.lsc.servus.liturgia.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "templates")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Template {
 
     @Id
@@ -24,15 +25,12 @@ public class Template {
     private String descricao;
 
     @Column(nullable = false)
-    private Boolean ativo = true;
+    private boolean ativo;
 
-    @Column(nullable = false)
-    private LocalDateTime criadoEm = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime criadoEm;
 
-    public Template() {
-    }
-
-    public Template(String nome, String descricao) {
+    protected Template(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
         this.ativo = true;
@@ -41,5 +39,9 @@ public class Template {
 
     public void desativar() {
         this.ativo = false;
+    }
+
+    public void ativar() {
+        this.ativo = true;
     }
 }

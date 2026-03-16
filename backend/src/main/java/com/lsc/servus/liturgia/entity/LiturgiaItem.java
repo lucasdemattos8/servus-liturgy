@@ -79,14 +79,23 @@ public class LiturgiaItem {
     }
 
     protected void cancelar() {
+        if (this.status == LiturgiaItemStatus.CANCELADO) {
+            return;
+        }
         this.status = LiturgiaItemStatus.CANCELADO;
     }
 
     protected void iniciar() {
+        if (this.status == LiturgiaItemStatus.CANCELADO) {
+            throw new IllegalStateException("Item cancelado não pode iniciar.");
+        }
         this.status = LiturgiaItemStatus.EM_PROGRESSO;
     }
 
     protected void concluir() {
+        if (this.status != LiturgiaItemStatus.EM_PROGRESSO) {
+            throw new IllegalStateException("Só pode concluir item em progresso.");
+        }
         this.status = LiturgiaItemStatus.CONCLUIDO;
     }
 
